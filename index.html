@@ -18,7 +18,7 @@
 <script>
     // 建構子 ScoreOutputer 接受一個字串，該字串為 csv 的檔案名稱
     // 以下面範例，檔名就為 "109598105(總分: 6).csv"
-    var so = new ScoreOutputer("110598045");
+    var so = new ScoreOutputer("110598063");
     so.installCSS(function () {
         so.addChild("透過模型分割出心臟，輸出心臟遮罩圖片", 6, true);
         so.addChild("心臟遮罩圖片轉成nrrd檔案 ", 1, true);
@@ -52,9 +52,10 @@
     import {NRRDLoader} from './three/examples/jsm/loaders/NRRDLoader.js';
     import {VolumeRenderShader1} from './three/examples/jsm/shaders/VolumeShader.js';
 
-    let renderer, scene, camera, controls, material, volconfig, cmtextures;
+    let renderer, scene, camera, controls, material, volconfig, cmtextures, group;
 
-    let modelPath = './data/nrrd_data/ID00423637202312137826377_gt_mask.nrrd';
+    let GTmodelPath = './data/nrrd_data/ID00423637202312137826377_gt_mask.nrrd';
+    let modelPath = './data/nrrd_data/ID00423637202312137826377_mask.nrrd';
 
     volconfig = {clim1: 0, clim2: 1, renderstyle: 'iso', isothreshold: 0.15, colormap: 'red'};
 
@@ -62,6 +63,7 @@
 
     function init() {
         scene = new THREE.Scene();
+        group = new THREE.Group();
 
         createCamera();
 
@@ -69,8 +71,9 @@
 
         createControl();
 
+
         // Load the data ...
-        loadNRRD(modelPath);
+        loadNRRD(modelPath) ;
 
         window.addEventListener('resize', onWindowResize);
     }
@@ -144,6 +147,7 @@
             render();
         });
     }
+
 
     function updateUniforms() {
         material.uniforms["u_clim"].value.set(volconfig.clim1, volconfig.clim2);
